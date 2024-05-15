@@ -20,17 +20,20 @@ import {getDimensionPercentage as dimen} from '../Utils/Utils';
 import CheckBox from 'react-native-check-box';
 
 const FirstTask = () => {
+  const [blur,setBlur]=useState()
   const height = Dimensions.get('window').height;
   const panelRef = useRef(null);
   const [data, setData] = useState(data_one);
 
   const handleClick = index => {
-    console.log(index);
+    // console.log(index);
     let oldData = [...data];
+    // console.log("old data index-------------------",oldData[index])
     oldData[index].isSelected = !oldData[index].isSelected;
     setData(oldData);
   };
 
+  
   const isAllChecked = () => {
     let isDisable = false;
 
@@ -48,9 +51,7 @@ const FirstTask = () => {
 
   return (
     <View style={{flex: 1}}>
-      <TouchableOpacity onPress={() => panelRef.current.togglePanel()}>
-        <Text>Toggle</Text>
-      </TouchableOpacity>
+     
 
       <BottomSheet
         ref={panelRef}
@@ -108,6 +109,10 @@ const FirstTask = () => {
           </View>
         </View>
       </BottomSheet>
+
+      <TouchableOpacity onPress={() => panelRef.current.togglePanel()}>
+        <Text>Toggle</Text>
+      </TouchableOpacity>
     </View>
   );
 };

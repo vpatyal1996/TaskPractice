@@ -5,6 +5,9 @@ const colors = {
   backgroundTask:'#0F2337',
   subTextColor:'#899098',
   lineColor:"#1E3B5B",
+  price_color:"#5CC7AE",
+  drk_grey:'#62616A',
+  textInput_fontColor:'#6B6782',
   // end 
   newColor: '#1C1D21',
   newHeader: '#1A202E',
