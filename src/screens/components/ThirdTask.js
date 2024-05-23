@@ -30,10 +30,11 @@ const ThirdTask = () => {
   const window = useWindowDimensions();
   console.log(window);
 
-  const animation = useRef(new Animated.Value(0)).current;
+  const animation = useRef(new Animated.Value(0)).current; 
   const [btnClikced, setBtnclicked] = useState(false);
   const [shimmerEffect, setShimmerEffect] = useState(false);
   console.log(btnClikced);
+
   const startAnimation = () => {
     Animated.spring(animation, {
       toValue: btnClikced ? 0 : 1,
@@ -42,10 +43,12 @@ const ThirdTask = () => {
     }).start();
   };
   const handleContinue = () => {
+
     if (!btnClikced) {
       setBtnclicked(true);
       startAnimation();
     }
+    
   };
 
   const handleClose = () => {

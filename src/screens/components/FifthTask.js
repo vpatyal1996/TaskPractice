@@ -4,29 +4,30 @@ import {scale, verticalScale, moderateScale} from 'react-native-size-matters';
 
 const FifthTask = () => {
   const [data, setData] = useState([
-    'attitude',
-    'girls',
-    'winners',
-    'person',
-    'academic',
-    'torn',
-    'lemon',
-    'lesson',
-    'jigga',
-    'limit',
-    'orotund',
-    'soda',
+    '1.attitude',
+    '2.girls',
+    '3.winners',
+    '4.person',
+    '5.academic',
+    '6.torn',
+    '7.lemon',
+    '8.lesson',
+    '9.jigga',
+    '10.limit',
+    '11.orotund',
+    '12.soda',
   ]);
   const [topContainer, setTopCoantainer] = useState();
 
   const handleClick = (item, index) => {
     const abc = [...data];
-    abc.splice(item, 1);
+    // console.log(abc[index],index)
+    abc.splice(index, 1, '');
     setData(abc);
     const store = `${item}${index}`;
     setTopCoantainer(store);
   };
-  console.log("top------",topContainer)
+  console.log('top------', topContainer);
 
   // const ItemSeparator = () => <View style={styles.separator} />;
 
@@ -40,7 +41,6 @@ const FifthTask = () => {
           data={data}
           numColumns={4}
           renderItem={({item, index}) => (
-            
             <View style={styles.outsideMain}>
               <TouchableOpacity
                 style={styles.box}
