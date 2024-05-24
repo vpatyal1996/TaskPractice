@@ -5,6 +5,7 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
+  Switch,
   Text,
   TouchableOpacity,
   View,
@@ -18,22 +19,76 @@ import InputField from '../common/sixthtask/InputField';
 import {quoteData} from '../common/sixthtask/QuoteData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TouchID from 'react-native-touch-id';
+import ModalComponent from '../common/Modal';
+import Navigation from './Navigatation/Navigation';
+import DraggableFlatList, {
+  ScaleDecorator,
+} from 'react-native-draggable-flatlist';
 
 const SixthTask = () => {
   // biometryType
   const [check, setCheck] = useState(false);
   /////
 
-  const [data, setData] = useState(quoteData);
+  const [data_1, setData] = useState(quoteData);
   const [price, setPrice] = useState(0);
   const [value, setValue] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [changeQty, setChangeQty] = useState(0);
   const [selectedIndx, setSelectedIndx] = useState();
+  // const [modalVisible, setModalVisible] = useState(false);
+  const [storage, setStorage] = useState();
+  const [toggleSwitch, setSwitch] = useState(false);
+  // console.log({toggleSwitch});
+  data_1.map((items,index)=>{
+   items.id= index+1
+   return items
+  }
+)
+  // console.log(data_1)
+  const handleSwitch = () => {
+    setSwitch(!toggleSwitch);
+  };
+  //  useEffect(()=>{
+  //      storeUser(toggleSwitch)
+  //  },[toggleSwitch])
+  // const handle_Modal = () => {
+  //   setModalVisible(true);
+  // };
+  // const handleNo = () => {
+  //   setModalVisible(false);
+  // };
+  // const handleYes = () => {
+  //   BackHandler.exitApp();
+  //   setModalVisible(false);
+  // };
+
+  //*****************************back btn**************************************//
+  useEffect(() => {
+    const backHandler = () => {
+      Alert.alert('Exit App', 'Are you sure you want to exit the App?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {text: 'Yes', onPress: () => BackHandler.exitApp()},
+      ]);
+      return true;
+    };
+
+    const backSubscription = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backHandler,
+    );
+
+    return () => backSubscription.remove();
+  }, []);
+  //****************************ends here*************************************//
 
   //**************************************appState****************************//
   const appState = useRef(AppState.currentState);
-  console.log({appState})
+  // console.log({appState});
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
   useEffect(() => {
@@ -43,17 +98,19 @@ const SixthTask = () => {
         nextAppState === 'active'
       ) {
         // console.log('App has come to the foreground!');
-        handleBiometric();
+        if (toggleSwitch == true) {
+          handleBiometric();
+        }
       }
       appState.current = nextAppState;
       setAppStateVisible(appState.current);
-      // console.log('AppState', appState.current);
+      console.log('AppState', appState.current);
     });
 
     return () => {
       subscription.remove();
     };
-  }, []);
+  }, [toggleSwitch]);
   // *****************************appState ends here****************************************//
 
   //************************touch id starts here***************************//
@@ -70,8 +127,10 @@ const SixthTask = () => {
     passcodeFallback: false, // iOS - allows the device to fall back to using the passcode, if faceid/touch is not available. this does not mean that if touchid/faceid fails the first few times it will revert to passcode, rather that if the former are not enrolled, then it will use the passcode.
   };
   useEffect(() => {
-    handleBiometric();
-  },[]);
+    if (toggleSwitch == true) {
+      handleBiometric();
+    }
+  }, []);
   const handleBiometric = () => {
     TouchID.isSupported(ConfigObject)
       .then(biometryType => {
@@ -82,13 +141,11 @@ const SixthTask = () => {
           console.log('TouchID is supported.');
           TouchID.authenticate('', ConfigObject)
             .then(success => {
-              Alert.alert('success');
+              Alert.alert(success);
             })
             .catch(err => {
               console.log('error------------------------------------', err);
-              if(err){
-                BackHandler.exitApp()
-              }
+              BackHandler.exitApp();
             });
         }
       })
@@ -100,6 +157,8 @@ const SixthTask = () => {
   //************************touch id ends here***************************//
 
   const handleClick = (clickedData, idx) => {
+    console.log({idx})
+    console.log({clickedData})
     const item_data = clickedData.perUnitPrice;
     const item_available = clickedData.available;
     setPrice(item_data);
@@ -116,7 +175,6 @@ const SixthTask = () => {
     };
     storeUser(data);
   };
-  console.log('on click-------------', value);
 
   //**********************************Async storage starts here***********************//
 
@@ -132,7 +190,7 @@ const SixthTask = () => {
   const getUser = async () => {
     try {
       const userData = JSON.parse(await AsyncStorage.getItem('selectedIndex'));
-      console.log({userData});
+      console.log('userdata-------------', userData);
       if (
         userData.idx >= 0 &&
         !userData.item_available == '' &&
@@ -143,6 +201,7 @@ const SixthTask = () => {
         setChangeQty(userData.item_available);
         setPrice(userData.item_data);
         setValue(userData.multiply);
+        setSwitch(userData);
       }
     } catch (error) {
       console.log(error);
@@ -168,70 +227,121 @@ const SixthTask = () => {
       setChangeQty(quantity);
     }
   };
+
+  //********************************************************************************//
+
   return (
     <View style={styles.main}>
       <StatusBar backgroundColor={colors.header.backgroundColor} />
 
-      <Header styles={styles} leftIcon={images.arrow_back} title="Invest" />
-
+      <Header
+        styles={styles}
+        leftIcon={images.arrow_back}
+        title="Invest"
+        // handleModal={() => navigation.navigate('Home')}
+      />
+      {/* <ModalComponent
+        handleNo={handleNo}
+        handleYes={handleYes}
+        modalVisible={modalVisible}
+      /> */}
       {/* section  */}
       <ScrollView>
-        <View style={styles.section_container}>
-          <View style={styles.section}>
-            <TokenInfoSection
-              title="Token Price"
-              amount={price}
-              unit="TUT"
-              containerStyle={styles.token_price_Maincontainer}
-              titleStyle={styles.tokenPrice_text}
-              amountStyle={styles.token_price_amount}
-              unitStyle={styles.tut}
-            />
+      <View style={styles.section_container}>
+        <View style={{margin: 10}}>
+          <Switch onValueChange={() => handleSwitch()} value={toggleSwitch} />
+        </View>
+        <View style={styles.section}>
+          <TokenInfoSection
+            title="Token Price"
+            amount={price}
+            unit="TUT"
+            containerStyle={styles.token_price_Maincontainer}
+            titleStyle={styles.tokenPrice_text}
+            amountStyle={styles.token_price_amount}
+            unitStyle={styles.tut}
+          />
 
-            <View style={styles.line} />
-            <TokenInfoSection
-              title="Asset Name"
-              amount="TST1"
-              containerStyle={styles.token_price_Maincontainer_sec}
-              titleStyle={styles.tokenPrice_text}
-              amountStyle={styles.token_price_amount_sec}
-            />
-          </View>
+          <View style={styles.line} />
+          <TokenInfoSection
+            title="Asset Name"
+            amount="TST1"
+            containerStyle={styles.token_price_Maincontainer_sec}
+            titleStyle={styles.tokenPrice_text}
+            amountStyle={styles.token_price_amount_sec}
+          />
+        </View>
 
-          {/* textInput */}
-          <View style={styles.inputField_container}>
-            <InputField
-              label="Enter Amount"
-              value={changeQty}
-              onChangeText={handleValueChange}
-              keyboardType="numeric"
-              containerStyle={styles.first_inputField}
-              labelStyle={styles.enter_Amount}
-              inputStyle={styles.input}
-              additionalComponent={
-                <Text style={styles.min_investment}>Min Investment: 10TUT</Text>
-              }
-            />
-            <InputField
-              editable={false}
-              label="Equivalent amount of Tokens (TST)"
-              value={value.toString()}
-              keyboardType="numeric"
-              containerStyle={styles.first_inputField_two}
-              labelStyle={styles.enter_Amount}
-              inputStyle={styles.input}
-            />
+        {/* textInput */}
+        <View style={styles.inputField_container}>
+          <InputField
+            label="Enter Amount"
+            value={changeQty}
+            onChangeText={handleValueChange}
+            keyboardType="numeric"
+            containerStyle={styles.first_inputField}
+            labelStyle={styles.enter_Amount}
+            inputStyle={styles.input}
+            additionalComponent={
+              <Text style={styles.min_investment}>Min Investment: 10TUT</Text>
+            }
+          />
+          <InputField
+            editable={false}
+            label="Equivalent amount of Tokens (TST)"
+            value={value.toString()}
+            keyboardType="numeric"
+            containerStyle={styles.first_inputField_two}
+            labelStyle={styles.enter_Amount}
+            inputStyle={styles.input}
+          />
 
-            {/* flatlist data  */}
+          {/* flatlist data  */}
 
-            {/* <FlatList
+          {/* <FlatList
             data={data}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item, index}) => (
              
             )}
           /> */}
-            {data.map((item, index) => (
+          <DraggableFlatList
+            data={data_1}
+            scrollEnabled={false}
+            onDragEnd={({data}) => setData(data)}
+            renderItem={({item, drag, isActive,getIndex}) => {
+              return (
+                <ScaleDecorator>
+                  {/* {console.log("index>>>>>>>>>>>>>>",getIndex())} */}
+                  <TouchableOpacity
+                    onLongPress={drag}
+                    disabled={isActive}
+                    // key={index}
+                    style={styles.data_container}
+                    onPress={() => handleClick(item, item.id)}>
+                    <Text style={styles.quote}>{item.quote}</Text>
+                    <View style={styles.selected_container}>
+                      <Text style={styles.quantity}>
+                        Available Qty: {item.available} tokens
+                      </Text>
+                      <View style={styles.round_container}>
+                        {item.id == selectedIndx ? (
+                          <View style={styles.inside_round_container}></View>
+                        ) : null}
+                      </View>
+                    </View>
+
+                    <Text style={styles.price}>
+                      Per Unit Price: ${item.perUnitPrice}
+                    </Text>
+                  </TouchableOpacity>
+                </ScaleDecorator>
+              );
+            }}
+            keyExtractor={(item, index) => index}
+
+          />
+          {/* {data.map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={styles.data_container}
@@ -252,9 +362,9 @@ const SixthTask = () => {
                   Per Unit Price: ${item.perUnitPrice}
                 </Text>
               </TouchableOpacity>
-            ))}
-          </View>
+            ))} */}
         </View>
+      </View>
       </ScrollView>
     </View>
   );
@@ -353,7 +463,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: colors.section.borderLine,
     fontSize: 16,
-    color:'black'
+    color: 'black',
   },
   first_inputField: {
     gap: 10,

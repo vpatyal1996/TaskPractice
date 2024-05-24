@@ -7,6 +7,7 @@ import LightTheme from '../../../theme/LightTheme';
 import {AppContext} from '../../../theme/AppContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FifthTask from '../FifthTask';
+// import SixthTask from '../SixthTask';
 
 const Stack = createNativeStackNavigator();
 
@@ -47,7 +48,11 @@ const Navigation = () => {
   return (
     <NavigationContainer theme={isDarkTheme ? DarkTheme : LightTheme}>
       <AppContext.Provider value={appContext}>
-        <Stack.Navigator>
+        <Stack.Navigator
+        screenOptions={{
+          headerShown: false
+        }}
+        >
           <Stack.Screen
             name="Home"
             component={FourthTask}
@@ -57,6 +62,11 @@ const Navigation = () => {
             name="Verify"
             component={FifthTask}
             options={{title: 'Verify'}}
+          />
+          <Stack.Screen
+          name='invest'
+          component={SixthTask}
+          
           />
         </Stack.Navigator>
       </AppContext.Provider>

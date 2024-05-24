@@ -1,13 +1,13 @@
 // Header.js
 import React from 'react'
-import { View, Text, Image, StyleSheet } from 'react-native'
+import { View, Text, Image, StyleSheet, Touchable, TouchableOpacity } from 'react-native'
 
-const Header = ({ styles, leftIcon, title }) => {
+const Header = ({ styles, leftIcon, title,handleModal }) => {
   return (
     <View style={[defaultStyles.header, styles.header]}>
-      <View style={[defaultStyles.text, styles.text]}>
+      <TouchableOpacity onPress={handleModal} style={[defaultStyles.text, styles.text]}>
         <Image source={leftIcon} />
-      </View>
+      </TouchableOpacity >
       <Text style={[defaultStyles.investText, styles.investText]}>{title}</Text>
       <Text style={[defaultStyles.text, styles.text]}></Text>
     </View>

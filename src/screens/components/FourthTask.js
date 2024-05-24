@@ -78,7 +78,7 @@ const FourthTask = ({navigation}) => {
         keyboardType="numeric"
       />
       <Switch value={isDarkTheme} onChange={()=>handleClick(isDarkTheme)}/>
-      <Button title='next page' onPress={()=>navigation.navigate('Verify')}/>
+      <Button title='next page' onPress={()=>navigation.navigate('invest')}/>
     </View>
   );
 };
