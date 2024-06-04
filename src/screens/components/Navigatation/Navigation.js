@@ -7,7 +7,7 @@ import LightTheme from '../../../theme/LightTheme';
 import {AppContext} from '../../../theme/AppContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FifthTask from '../FifthTask';
-// import SixthTask from '../SixthTask';
+import SixthTask from '../SixthTask';
 
 const Stack = createNativeStackNavigator();
 

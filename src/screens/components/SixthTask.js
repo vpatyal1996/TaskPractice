@@ -24,6 +24,7 @@ import Navigation from './Navigatation/Navigation';
 import DraggableFlatList, {
   ScaleDecorator,
 } from 'react-native-draggable-flatlist';
+import {strings} from '../../theme/Lang';
 
 const SixthTask = () => {
   // biometryType
@@ -39,12 +40,20 @@ const SixthTask = () => {
   // const [modalVisible, setModalVisible] = useState(false);
   const [storage, setStorage] = useState();
   const [toggleSwitch, setSwitch] = useState(false);
+
+  // channge language //
+  const [local, setLocal] = useState();
+  const chnageLang = () => {
+    strings.setLanguage('en');
+  };
+  chnageLang();
+  //  chnage lng end here //
+
   // console.log({toggleSwitch});
-  data_1.map((items,index)=>{
-   items.id= index+1
-   return items
-  }
-)
+  data_1.map((items, index) => {
+    items.id = index + 1;
+    return items;
+  });
   // console.log(data_1)
   const handleSwitch = () => {
     setSwitch(!toggleSwitch);
@@ -157,8 +166,8 @@ const SixthTask = () => {
   //************************touch id ends here***************************//
 
   const handleClick = (clickedData, idx) => {
-    console.log({idx})
-    console.log({clickedData})
+    console.log({idx});
+    console.log({clickedData});
     const item_data = clickedData.perUnitPrice;
     const item_available = clickedData.available;
     setPrice(item_data);
@@ -233,11 +242,10 @@ const SixthTask = () => {
   return (
     <View style={styles.main}>
       <StatusBar backgroundColor={colors.header.backgroundColor} />
-
       <Header
         styles={styles}
         leftIcon={images.arrow_back}
-        title="Invest"
+        title={strings.invest}
         // handleModal={() => navigation.navigate('Home')}
       />
       {/* <ModalComponent
@@ -247,101 +255,102 @@ const SixthTask = () => {
       /> */}
       {/* section  */}
       <ScrollView>
-      <View style={styles.section_container}>
-        <View style={{margin: 10}}>
-          <Switch onValueChange={() => handleSwitch()} value={toggleSwitch} />
-        </View>
-        <View style={styles.section}>
-          <TokenInfoSection
-            title="Token Price"
-            amount={price}
-            unit="TUT"
-            containerStyle={styles.token_price_Maincontainer}
-            titleStyle={styles.tokenPrice_text}
-            amountStyle={styles.token_price_amount}
-            unitStyle={styles.tut}
-          />
+        <View style={styles.section_container}>
+          <View style={{margin: 10}}>
+            <Switch onValueChange={() => handleSwitch()} value={toggleSwitch} />
+          </View>
+          <View style={styles.section}>
+            <TokenInfoSection
+              title="Token Price"
+              amount={price}
+              unit="TUT"
+              containerStyle={styles.token_price_Maincontainer}
+              titleStyle={styles.tokenPrice_text}
+              amountStyle={styles.token_price_amount}
+              unitStyle={styles.tut}
+            />
 
-          <View style={styles.line} />
-          <TokenInfoSection
-            title="Asset Name"
-            amount="TST1"
-            containerStyle={styles.token_price_Maincontainer_sec}
-            titleStyle={styles.tokenPrice_text}
-            amountStyle={styles.token_price_amount_sec}
-          />
-        </View>
+            <View style={styles.line} />
+            <TokenInfoSection
+              title="Asset Name"
+              amount="TST1"
+              containerStyle={styles.token_price_Maincontainer_sec}
+              titleStyle={styles.tokenPrice_text}
+              amountStyle={styles.token_price_amount_sec}
+            />
+          </View>
 
-        {/* textInput */}
-        <View style={styles.inputField_container}>
-          <InputField
-            label="Enter Amount"
-            value={changeQty}
-            onChangeText={handleValueChange}
-            keyboardType="numeric"
-            containerStyle={styles.first_inputField}
-            labelStyle={styles.enter_Amount}
-            inputStyle={styles.input}
-            additionalComponent={
-              <Text style={styles.min_investment}>Min Investment: 10TUT</Text>
-            }
-          />
-          <InputField
-            editable={false}
-            label="Equivalent amount of Tokens (TST)"
-            value={value.toString()}
-            keyboardType="numeric"
-            containerStyle={styles.first_inputField_two}
-            labelStyle={styles.enter_Amount}
-            inputStyle={styles.input}
-          />
+          {/* textInput */}
+          <View style={styles.inputField_container}>
+            <InputField
+              label="Enter Amount"
+              value={changeQty}
+              onChangeText={handleValueChange}
+              keyboardType="numeric"
+              containerStyle={styles.first_inputField}
+              labelStyle={styles.enter_Amount}
+              inputStyle={styles.input}
+              additionalComponent={
+                <Text style={styles.min_investment}>Min Investment: 10TUT</Text>
+              }
+            />
+            <InputField
+              editable={false}
+              label="Equivalent amount of Tokens (TST)"
+              value={value.toString()}
+              keyboardType="numeric"
+              containerStyle={styles.first_inputField_two}
+              labelStyle={styles.enter_Amount}
+              inputStyle={styles.input}
+            />
 
-          {/* flatlist data  */}
+            {/* flatlist data  */}
 
-          {/* <FlatList
+            {/* <FlatList
             data={data}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item, index}) => (
              
             )}
           /> */}
-          <DraggableFlatList
-            data={data_1}
-            scrollEnabled={false}
-            onDragEnd={({data}) => setData(data)}
-            renderItem={({item, drag, isActive,getIndex}) => {
-              return (
-                <ScaleDecorator>
-                  {/* {console.log("index>>>>>>>>>>>>>>",getIndex())} */}
-                  <TouchableOpacity
-                    onLongPress={drag}
-                    disabled={isActive}
-                    // key={index}
-                    style={styles.data_container}
-                    onPress={() => handleClick(item, item.id)}>
-                    <Text style={styles.quote}>{item.quote}</Text>
-                    <View style={styles.selected_container}>
-                      <Text style={styles.quantity}>
-                        Available Qty: {item.available} tokens
-                      </Text>
-                      <View style={styles.round_container}>
-                        {item.id == selectedIndx ? (
-                          <View style={styles.inside_round_container}></View>
-                        ) : null}
+            <DraggableFlatList
+              data={data_1}
+              scrollEnabled={false}
+              onDragEnd={({data}) => setData(data)}
+              renderItem={({item, drag, isActive, getIndex}) => {
+                return (
+                  <ScaleDecorator>
+                  <>
+                    {/* {console.log("index>>>>>>>>>>>>>>",getIndex())} */}
+                    <TouchableOpacity
+                      onLongPress={drag}
+                      disabled={isActive}
+                      // key={index}
+                      style={styles.data_container}
+                      onPress={() => handleClick(item, item.id)}>
+                      <Text style={styles.quote}>{item.quote}</Text>
+                      <View style={styles.selected_container}>
+                        <Text style={styles.quantity}>
+                          Available Qty: {item.available} tokens
+                        </Text>
+                        <View style={styles.round_container}>
+                          {item.id == selectedIndx ? (
+                            <View style={styles.inside_round_container}></View>
+                          ) : null}
+                        </View>
                       </View>
-                    </View>
 
-                    <Text style={styles.price}>
-                      Per Unit Price: ${item.perUnitPrice}
-                    </Text>
-                  </TouchableOpacity>
-                </ScaleDecorator>
-              );
-            }}
-            keyExtractor={(item, index) => index}
-
-          />
-          {/* {data.map((item, index) => (
+                      <Text style={styles.price}>
+                        Per Unit Price: ${item.perUnitPrice}
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                  </ScaleDecorator>
+                );
+              }}
+              keyExtractor={(item, index) => index}
+            />
+            {/* {data.map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={styles.data_container}
@@ -363,8 +372,8 @@ const SixthTask = () => {
                 </Text>
               </TouchableOpacity>
             ))} */}
+          </View>
         </View>
-      </View>
       </ScrollView>
     </View>
   );

@@ -114,6 +114,9 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+    // ssl-pinning //
+      implementation project(':react-native-ssl-pinning') // Add this line
+     //  end here /
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
