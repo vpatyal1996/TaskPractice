@@ -17,7 +17,10 @@ import SecondTask from './src/screens/components/SecondTask';
 import Sevevn from './src/screens/components/Sevevn';
 import ToDo from './src/screens/components/ToDo';
 import Dragable_two from './src/screens/components/Dragable_two';
+import QrCode from './src/screens/components/QrCode';
+import QRCODE from './src/screens/components/QrCode';
+import searchBar from './src/screens/components/searchBar/searchBar';
 // import Navigation from './src/screens/components/Navigatation/Navigation';
 // import FifthTask from './src/screens/components/FifthTask';
 
-AppRegistry.registerComponent(appName, () =>  App);
+AppRegistry.registerComponent(appName, () =>  searchBar);
